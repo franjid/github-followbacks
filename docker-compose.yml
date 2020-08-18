@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+    php:
+        build:
+            context: .
+            dockerfile: ./docker/php/Dockerfile
+        volumes:
+            - ./code:/code
+            - /code/app/vendor # ignore vendor folder
+
