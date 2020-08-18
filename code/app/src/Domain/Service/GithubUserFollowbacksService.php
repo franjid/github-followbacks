@@ -31,10 +31,8 @@ class GithubUserFollowbacksService
             $followBacksArray = array_map('unserialize', array_intersect($serializedFollowers, $serializedFollowing));
             $followBacks = new GithubUserCollection(
                 ...array_map(
-                static function ($user) {
-                    return new GithubUser($user['id'], $user['username']);
-                }
-                , $followBacksArray
+                fn($user) => new GithubUser($user['id'], $user['username']),
+                $followBacksArray
             ));
         } catch (GithubApiErrorException $e) {
             if ($e->getCode() === 404) {

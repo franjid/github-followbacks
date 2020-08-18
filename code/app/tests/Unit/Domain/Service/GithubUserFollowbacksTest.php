@@ -54,24 +54,18 @@ class GithubUserFollowbacksTest extends TestCase
         $username = 'username';
         $followers = new GithubUserCollection(
             ...array_map(
-            static function ($user) {
-                return new GithubUser($user['id'], $user['username']);
-            }
-            , $followersArray
+            fn($user) => new GithubUser($user['id'], $user['username']),
+            $followersArray
         ));
         $following = new GithubUserCollection(
             ...array_map(
-            static function ($user) {
-                return new GithubUser($user['id'], $user['username']);
-            }
-            , $followingArray
+            fn($user) => new GithubUser($user['id'], $user['username']),
+            $followingArray
         ));
         $expectedFollowbacks = new GithubUserCollection(
             ...array_map(
-            static function ($user) {
-                return new GithubUser($user['id'], $user['username']);
-            }
-            , $expectedFollowbacksArray
+            fn($user) => new GithubUser($user['id'], $user['username']),
+            $expectedFollowbacksArray
         ));
 
         $this->githubRepositoryMock
