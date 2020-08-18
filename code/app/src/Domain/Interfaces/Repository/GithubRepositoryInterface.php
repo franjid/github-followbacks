@@ -7,4 +7,5 @@ use App\Domain\Entity\Collection\GithubUserCollection;
 interface GithubRepositoryInterface
 {
     public function getUserFollowers(string $username): GithubUserCollection;
+    public function getUserFollowing(string $username): GithubUserCollection;
 }

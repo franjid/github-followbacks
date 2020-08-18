@@ -10,6 +10,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GithubApiRepository implements GithubRepositoryInterface
 {
+    private const API_URL = 'https://api.github.com';
+
     private HttpClientInterface $client;
 
     public function __construct(HttpClientInterface $client)
@@ -17,35 +19,43 @@ class GithubApiRepository implements GithubRepositoryInterface
         $this->client = $client;
     }
 
-    /**
-     * @param string $username
-     *
-     * @return GithubUserCollection
-     * @throws GithubApiErrorException
-     */
     public function getUserFollowers(string $username): GithubUserCollection
     {
         try {
             $response = $this->client->request(
                 'GET',
-                sprintf(
-                    'https://api.github.com/users/%s/followers',
-                    $username
-                ),
+                sprintf(self::API_URL . '/users/%s/followers', $username),
             );
 
-            $results = $response->toArray();
+            return $this->populateUsers($response->toArray());
         } catch (\Throwable $e) {
             throw new GithubApiErrorException($e->getMessage(), $e->getCode());
         }
+    }
 
-        if (empty($results)) {
+    public function getUserFollowing(string $username): GithubUserCollection
+    {
+        try {
+            $response = $this->client->request(
+                'GET',
+                sprintf(self::API_URL . '/users/%s/following', $username),
+            );
+
+            return $this->populateUsers($response->toArray());
+        } catch (\Throwable $e) {
+            throw new GithubApiErrorException($e->getMessage(), $e->getCode());
+        }
+    }
+
+    private function populateUsers(array $githubUsersData): GithubUserCollection
+    {
+        if (empty($githubUsersData)) {
             return new GithubUserCollection();
         }
 
         $users = [];
 
-        foreach ($results as $user) {
+        foreach ($githubUsersData as $user) {
             $users[] = new GithubUser($user['id'], $user['login']);
         }
 
