@@ -4,6 +4,7 @@ namespace App\Domain\Service;
 
 use App\Domain\Entity\Collection\GithubUserCollection;
 use App\Domain\Entity\GithubUser;
+use App\Domain\Exception\GithubErrorException;
 use App\Domain\Exception\GithubUserNotFoundException;
 use App\Domain\Interfaces\Repository\GithubRepositoryInterface;
 use App\Infrastructure\Exception\GithubApiErrorException;
@@ -38,6 +39,8 @@ class GithubUserFollowbacksService
             if ($e->getCode() === 404) {
                 throw new GithubUserNotFoundException('Username ' . $username . ' not found in Github');
             }
+
+            throw new GithubErrorException($e->getMessage(), $e->getCode());
         }
 
         return $followBacks;
