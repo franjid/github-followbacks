@@ -15,6 +15,13 @@ In order to set up the app in a Docker environment you have to:
     docker-compose up
     ```
 
+## Tests
+
+You can check that all tests are passing:
+```
+docker-compose exec php vendor/bin/phpunit --color tests/
+```
+
 ## Running the command
 
 Once Docker is up, you can execute the command to get user followbacks.
