@@ -20,8 +20,6 @@ class GithubUserFollowbacksService
 
     public function getUserFollowbacks(string $username): GithubUserCollection
     {
-        $followBacks = new GithubUserCollection();
-
         try {
             $followers = $this->githubRepository->getUserFollowers($username)->toArray();
             $following = $this->githubRepository->getUserFollowing($username)->toArray();
@@ -30,7 +28,8 @@ class GithubUserFollowbacksService
             $serializedFollowing = array_map('serialize', $following);
 
             $followBacksArray = array_map('unserialize', array_intersect($serializedFollowers, $serializedFollowing));
-            $followBacks = new GithubUserCollection(
+
+            return new GithubUserCollection(
                 ...array_map(
                 fn($user) => new GithubUser($user['id'], $user['username']),
                 $followBacksArray
@@ -42,7 +41,5 @@ class GithubUserFollowbacksService
 
             throw new GithubErrorException($e->getMessage(), $e->getCode());
         }
-
-        return $followBacks;
     }
 }
